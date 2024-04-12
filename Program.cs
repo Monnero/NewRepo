@@ -1,4 +1,3 @@
-
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<HotelDb>(options =>
 {
@@ -14,28 +13,38 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/hotels", async (HotelDb db) => await db.Hotels.ToListAsync());
 
-app.MapGet("/hotels/{id}", async (int id, HotelDb db) => 
-await db.Hotels.FirstOrDefaultAsync(x => x.Id == id) is Hotel hotel 
-? Results.Ok(hotel) 
+app.MapGet("/hotels/{id}", async (int id, HotelDb db) =>
+await db.Hotels.FirstOrDefaultAsync(x => x.Id == id) is Hotel hotel
+? Results.Ok(hotel)
 : Results.NotFound());
 
-app.MapPost("/hotels", async ([FromBody] Hotel hotel, [FromServices] HotelDb db, HttpResponse response) =>
+app.MapPost("/hotels", async ([FromBody] Hotel hotel, [FromServices] HotelDb db) =>
 {
     db.Hotels.Add(hotel);
     await db.SaveChangesAsync();
-    response.StatusCode = 201;
-    response.Headers.Location = $"/hotels/{hotel.Id}";
+    return Results.Created($"/hotels/{hotel.Id}", new object[] { hotel.Id });
 });
 
-app.MapPut("/hotels", async (Hotel hotel, HotelDb db) =>
+app.MapPut("/hotels", async ([FromBody] Hotel hotel, [FromServices] HotelDb db) =>
 {
-
+    var hotelFromDb = await db.Hotels.FindAsync(new object[] { hotel.Id });
+    if (hotelFromDb is null) return Results.NotFound();
+    hotelFromDb.Name = hotel.Name;
+    hotelFromDb.Latitude = hotel.Latitude;
+    hotelFromDb.Longitude = hotel.Longitude;
+    await db.SaveChangesAsync();
+    return Results.NoContent();
 });
-app.MapDelete("/hotels/{id}", (int id) =>
+app.MapDelete("/hotels/{id}", async (int id, HotelDb db) =>
 {
-
+    var hotelFromDb = await db.Hotels.FindAsync(new object[] { id });
+    if (hotelFromDb is null) return Results.NotFound();
+    db.Hotels.Remove(hotelFromDb);
+    await db.SaveChangesAsync();
+    return Results.NoContent();
 });
 
+app.UseHttpsRedirection();
 app.Run();
 
 public class HotelDb : DbContext
