@@ -27,7 +27,7 @@ app.MapPost("/hotels", async ([FromBody] Hotel hotel, [FromServices] HotelDb db)
 
 app.MapPut("/hotels", async ([FromBody] Hotel hotel, [FromServices] HotelDb db) =>
 {
-    var hotelFromDb = await db.Hotels.FindAsync(new object[] { hotel.Id });
+    var hotelFromDb = await db.Hotels.FindAsync([hotel.Id]);
     if (hotelFromDb is null) return Results.NotFound();
     hotelFromDb.Name = hotel.Name;
     hotelFromDb.Latitude = hotel.Latitude;
@@ -46,20 +46,3 @@ app.MapDelete("/hotels/{id}", async (int id, HotelDb db) =>
 
 app.UseHttpsRedirection();
 app.Run();
-
-public class HotelDb : DbContext
-{
-    public HotelDb(DbContextOptions<HotelDb> options) : base(options) { }
-
-    public DbSet<Hotel> Hotels => Set<Hotel>();
-
-
-}
-
-public class Hotel
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
-}
