@@ -4,7 +4,6 @@ public class Db : DbContext
 {
     public Db(DbContextOptions<Db> options) : base(options) { }
 
-    //public DbSet<Hotel> Hotels => Set<Hotel>();
     public DbSet<Book> Books => Set<Book>();
     public DbSet<Author> Authors => Set<Author>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)

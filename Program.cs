@@ -1,3 +1,4 @@
+using HotelWebApi.Data;
 using HotelWebApi.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,7 @@ if (app.Environment.IsDevelopment())
     var db = scope.ServiceProvider.GetRequiredService<Db>();
 
     //db.Database.EnsureDeleted();
-    //db.Database.EnsureCreated();
+   // db.Database.EnsureCreated();
 
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -32,22 +33,22 @@ app.MapGet("/author", async (IBookRepository repository) => Results.Ok(await rep
 //? Results.Ok(hotel)
 //: Results.NotFound());
 
-app.MapPost("/hotels", async ([FromBody] Hotel hotel, IHotelRepository repository) =>
+app.MapPost("/books", async ([FromBody] Book book, IBookRepository repository) =>
 {
-    await repository.InsertHotelAsync(hotel);
+    await repository.InsertBookAsync(book);
     await repository.SaveAsync();
-    return Results.Created($"/hotels/{hotel.Id}", hotel);
+    return Results.Created($"/books/{book.Id}", book);
 });
 
-app.MapPut("/hotels", async ([FromBody] Hotel hotel, IHotelRepository repository) =>
+app.MapPut("/books", async ([FromBody] Book book, IBookRepository repository) =>
 {
-    await repository.UpdateHotelAsync(hotel);
+    await repository.UpdateBookAsync(book);
     await repository.SaveAsync();
     return Results.NoContent();
 });
-app.MapDelete("/hotels/{id}", async (int id, IHotelRepository repository) =>
+app.MapDelete("/books/{id}", async (int id, IBookRepository repository) =>
 {
-    await repository.DeleteHotelAsync(id);
+    await repository.DeleteBookAsync(id);
     await repository.SaveAsync();
     return Results.NoContent();
 });

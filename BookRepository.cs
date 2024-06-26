@@ -13,7 +13,6 @@ namespace HotelWebApi
             return await _context.Books.ToListAsync();
         }
        
-
         public async Task SaveAsync() => await _context.SaveChangesAsync();
 
         private bool _disposed = false;
@@ -34,44 +33,30 @@ namespace HotelWebApi
             GC.SuppressFinalize(this);
         }
 
-        public Task<Hotel?> GetHotelAsync(int bookId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task InsertHotelAsync(Book book)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateHotelAsync(Book book)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteHotelAsync(int bookId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<Book?> GetBookAsync(int bookId)
         {
             throw new NotImplementedException();
         }
 
-        public Task InsertBookAsync(Book book)
+        public async Task InsertBookAsync(Book book)
         {
-            throw new NotImplementedException();
+            await _context.Books.AddAsync(book);
+        }
+        
+        public async Task UpdateBookAsync(Book book)
+        {
+            var hotelFromDb = await _context.Books.FindAsync([book.Id]);
+            if (hotelFromDb is null) return;
+            hotelFromDb.Title = book.Title;
+            hotelFromDb.Authors = book.Authors;
+            hotelFromDb.Description = book.Description;
         }
 
-        public Task UpdateBookAsync(Book book)
+        public async Task DeleteBookAsync(int bookId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteBookAsync(int bookId)
-        {
-            throw new NotImplementedException();
+            var hotelFromDb = await _context.Books.FindAsync([bookId]);
+            if (hotelFromDb is null) return;
+            _context.Books.Remove(hotelFromDb);
         }
     }
 }
