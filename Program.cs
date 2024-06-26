@@ -4,6 +4,8 @@ builder.Services.AddDbContext<HotelDb>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite"));
 });
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
@@ -11,6 +13,7 @@ if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<HotelDb>();
+    db.Database.Migrate();
     db.Database.EnsureCreated();
 
     app.UseSwagger();
@@ -18,6 +21,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapGet("/hotels", async (IHotelRepository repository) => Results.Ok(await repository.GetHotelsAsync()));
+app.MapGet("/books", async (IBookRepository repository) => Results.Ok(await repository.GetBooksAsync()));
 
 app.MapGet("/hotels/{id}", async (int id, IHotelRepository repository) =>
 await repository.GetHotelAsync(id) is Hotel hotel

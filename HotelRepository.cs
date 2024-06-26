@@ -1,4 +1,6 @@
 ﻿
+using HotelWebApi.Data;
+
 namespace HotelWebApi
 {
     public class HotelRepository : IHotelRepository
@@ -53,6 +55,38 @@ namespace HotelWebApi
             GC.SuppressFinalize(this);
         }
         
+
+    }
+    public class BookRepository : IBookRepository
+    {
+        private readonly HotelDb _context;
+        public BookRepository(HotelDb context) => _context = context;
+        public async Task<List<Books>> GetBooksAsync()
+        {
+            return await _context.Books.ToListAsync();
+        }
+       
+
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
+
+        private bool _disposed = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            _disposed = true;
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
 
     }
 }
