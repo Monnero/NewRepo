@@ -4,13 +4,13 @@ using HotelWebApi.Interfaces;
 
 namespace HotelWebApi
 {
-    public class AuthorRepository : IAuthorRepository
+    public class BookRepository : IBookRepository
     {
         private readonly Db _context;
-        public AuthorRepository(Db context) => _context = context;
-        public async Task<List<Author>> GetAuthorsAsync()
+        public BookRepository(Db context) => _context = context;
+        public async Task<List<Book>> GetBooksAsync()
         {
-            return await _context.Authors.ToListAsync();
+            return await _context.Books.ToListAsync();
         }
        
 
@@ -34,25 +34,44 @@ namespace HotelWebApi
             GC.SuppressFinalize(this);
         }
 
-        public Task<Author?> GetAuthorAsync(int AuthorId)
+        public Task<Hotel?> GetHotelAsync(int bookId)
         {
             throw new NotImplementedException();
         }
 
-        public Task InsertAuthorAsync(Author Author)
+        public Task InsertHotelAsync(Book book)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAuthorAsync(Author Author)
+        public Task UpdateHotelAsync(Book book)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeleteAuthorAsync(int AuthorId)
+        public Task DeleteHotelAsync(int bookId)
         {
             throw new NotImplementedException();
         }
 
+        public Task<Book?> GetBookAsync(int bookId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task InsertBookAsync(Book book)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateBookAsync(Book book)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteBookAsync(int bookId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
