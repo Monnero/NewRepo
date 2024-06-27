@@ -10,9 +10,58 @@ namespace HotelWebApi
         public AuthorRepository(Db context) => _context = context;
         public async Task<List<Author>> GetAuthorsAsync()
         {
-            return await _context.Authors.ToListAsync();
+            return await (from a in _context.Authors
+                          select new Author
+                          {
+                              Id = a.Id,
+                              FirstName = a.FirstName,
+                              LastName = a.LastName,
+                              Language = a.Language,
+                              IsMainAuthor = a.IsMainAuthor,
+                              Books = a.Books
+                          }).ToListAsync(); ;
         }
-       
+        public async Task<Author?> GetAuthorAsync(int authorId)
+        {
+            return await (from a in _context.Authors
+                          where a.Id == authorId
+                          select new Author
+                          {
+                              Id = a.Id,
+                              FirstName = a.FirstName,
+                              LastName = a.LastName,
+                              Language = a.Language,
+                              IsMainAuthor = a.IsMainAuthor,
+                              Books = a.Books
+                          }).FirstAsync();
+        }
+
+        public async Task InsertAuthorAsync(Author author)
+        {
+            await _context.Authors.AddAsync(author);
+        }
+
+        public async Task UpdateAuthorAsync(Author author)
+        {
+            var authorFromDb = await _context.Authors.FindAsync([author.Id]);
+            if (authorFromDb is null) return;
+            authorFromDb.FirstName = author.FirstName;
+            authorFromDb.LastName = author.LastName;
+            authorFromDb.IsMainAuthor = author.IsMainAuthor;
+
+            authorFromDb.Books.AddRange(author.Books);
+
+
+            authorFromDb.IsMainAuthor = author.IsMainAuthor;
+            authorFromDb.Language = author.Language;
+        }
+
+        public async Task DeleteAuthorAsync(int authorId)
+        {
+            var authorFromDb = await _context.Authors.FindAsync([authorId]);
+            if (authorFromDb is null) return;
+            _context.Authors.Remove(authorFromDb);
+        }
 
         public async Task SaveAsync() => await _context.SaveChangesAsync();
 
@@ -33,26 +82,5 @@ namespace HotelWebApi
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
-        public Task<Author?> GetAuthorAsync(int AuthorId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task InsertAuthorAsync(Author Author)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task UpdateAuthorAsync(Author Author)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAuthorAsync(int AuthorId)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace HotelWebApi.Data
 {
@@ -13,8 +14,9 @@ namespace HotelWebApi.Data
         [Required]
         [MaxLength(500)]
         public string Description { get; set; } = string.Empty;
+        //[JsonIgnore]
+        public virtual ICollection<Author> Authors { get; set; } = new List<Author>();
 
-        public List<Author> Authors { get; set; } = new();
     }
 
 }

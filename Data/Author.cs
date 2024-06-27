@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace HotelWebApi.Data
@@ -18,23 +19,28 @@ namespace HotelWebApi.Data
         public string LastName { get; set; } = string.Empty;
 
         public bool IsMainAuthor { get; set; }
-
-        public List<Book> Books { get; set; } = new();
+        //[JsonIgnore]
+        public virtual List<Book> Books { get; set; } = new List<Book>();
 
         [Required]
         public string Language { get; set; } = string.Empty;
 
-        public void Validate()
+        public bool IsValidate()
         {
-            if (IsEnglish(LastName) != IsEnglish(FirstName))
+            if ((IsEnglish(LastName) == true && IsEnglish(FirstName) == true) || (IsRussian(LastName) == true && IsRussian(FirstName) == true))
             {
-                throw new Exception("Имена и фамилия должны быть на одном языке.");
+                return true;
             }
+            else return false;
         }
 
         private static bool IsEnglish(string text)
         {
             return Regex.IsMatch(text, @"^[a-zA-Z]+$");
+        }
+        private static bool IsRussian(string text)
+        {
+            return Regex.IsMatch(text, @"^[а-яА-ЯёЁ]+$");
         }
     }
 }
