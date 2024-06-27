@@ -8,6 +8,7 @@ namespace HotelWebApi.Data
     {
         public int Id { get; set; }
 
+        
         [Required]
         [MinLength(2)]
         [MaxLength(25)]
@@ -18,12 +19,8 @@ namespace HotelWebApi.Data
         [MaxLength(25)]
         public string LastName { get; set; } = string.Empty;
 
-        public bool IsMainAuthor { get; set; }
-        //[JsonIgnore]
         public virtual List<Book> Books { get; set; } = new List<Book>();
 
-        [Required]
-        public string Language { get; set; } = string.Empty;
 
         public bool IsValidate()
         {

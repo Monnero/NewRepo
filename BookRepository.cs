@@ -17,7 +17,8 @@ namespace HotelWebApi
                               Id = b.Id,
                               Authors = b.Authors,
                               Description = b.Description,
-                              Title = b.Title
+                              Title = b.Title,
+                              MainAuthorId = b.MainAuthorId
                           }).ToListAsync();
         }
         public async Task<Book?> GetBookAsync(int bookId)
@@ -29,7 +30,8 @@ namespace HotelWebApi
                               Id = b.Id,
                               Authors = b.Authors,
                               Description = b.Description,
-                              Title = b.Title
+                              Title = b.Title,
+                              MainAuthorId = b.MainAuthorId
                           }).FirstAsync();
         }
 
@@ -43,8 +45,9 @@ namespace HotelWebApi
             var hotelFromDb = await _context.Books.FindAsync([book.Id]);
             if (hotelFromDb is null) return;
             hotelFromDb.Title = book.Title;
-            hotelFromDb.Authors = book.Authors;
+            hotelFromDb.Authors.AddRange(book.Authors);
             hotelFromDb.Description = book.Description;
+            hotelFromDb.MainAuthorId = book.MainAuthorId;
         }
 
         public async Task DeleteBookAsync(int bookId)

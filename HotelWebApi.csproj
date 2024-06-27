@@ -8,10 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\AuthorsController.cs" />
-    <Compile Remove="Controllers\BooksController.cs" />
+    <Compile Remove="Controllers\**" />
+    <Content Remove="Controllers\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <None Remove="Controllers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Data\Hotel.cs" />
     <Compile Remove="Interfaces\IHotelRepository.cs" />
+    <Compile Remove="Migrations\20240627075502_add_new_table.cs" />
+    <Compile Remove="Migrations\20240627075502_add_new_table.Designer.cs" />
+    <Compile Remove="Migrations\20240627081437_m2.cs" />
+    <Compile Remove="Migrations\20240627081437_m2.Designer.cs" />
+    <Compile Remove="Migrations\20240627110313_fix_model_book.cs" />
+    <Compile Remove="Migrations\20240627110313_fix_model_book.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,10 +35,6 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

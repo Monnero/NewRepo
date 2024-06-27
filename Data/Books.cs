@@ -15,8 +15,9 @@ namespace HotelWebApi.Data
         [MaxLength(500)]
         public string Description { get; set; } = string.Empty;
         //[JsonIgnore]
-        public virtual ICollection<Author> Authors { get; set; } = new List<Author>();
-
+        public virtual List<Author> Authors { get; set; } = new List<Author>();
+        [Required]
+        public int MainAuthorId { get; set; }
     }
 
 }

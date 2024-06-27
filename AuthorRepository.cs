@@ -16,8 +16,6 @@ namespace HotelWebApi
                               Id = a.Id,
                               FirstName = a.FirstName,
                               LastName = a.LastName,
-                              Language = a.Language,
-                              IsMainAuthor = a.IsMainAuthor,
                               Books = a.Books
                           }).ToListAsync(); ;
         }
@@ -30,8 +28,6 @@ namespace HotelWebApi
                               Id = a.Id,
                               FirstName = a.FirstName,
                               LastName = a.LastName,
-                              Language = a.Language,
-                              IsMainAuthor = a.IsMainAuthor,
                               Books = a.Books
                           }).FirstAsync();
         }
@@ -47,13 +43,7 @@ namespace HotelWebApi
             if (authorFromDb is null) return;
             authorFromDb.FirstName = author.FirstName;
             authorFromDb.LastName = author.LastName;
-            authorFromDb.IsMainAuthor = author.IsMainAuthor;
-
             authorFromDb.Books.AddRange(author.Books);
-
-
-            authorFromDb.IsMainAuthor = author.IsMainAuthor;
-            authorFromDb.Language = author.Language;
         }
 
         public async Task DeleteAuthorAsync(int authorId)
