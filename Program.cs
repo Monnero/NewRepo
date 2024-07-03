@@ -22,7 +22,7 @@ builder.Services.AddControllers()
 builder.Services.AddMvc();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Каталог книг", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ГЉГ ГІГ Г«Г®ГЈ ГЄГ­ГЁГЈ", Version = "v1" });
 });
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -36,18 +36,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-#region Методы для работы с книгами
-///<summary> Метод для получения всех книг </summary>
+
 app.MapGet("/order", async (IOrderRepository repository) => Results.Ok(await repository.GetOrdersAsync()));
 
-///<summary> Метод для получения книги по id </summary>
 app.MapGet("/order/{id}", async (int id, IOrderRepository repository) =>
 await repository.GetOrderAsync(id) is Order order
 ? Results.Ok(order)
 : Results.NotFound());
 
 
-///<summary> Метод для добавления книги </summary>
 app.MapPost("/order", async ([FromBody] Order order, IOrderRepository repository) =>
 {
     await repository.InsertOrderAsync(order);
@@ -55,7 +52,6 @@ app.MapPost("/order", async ([FromBody] Order order, IOrderRepository repository
     return Results.Created($"/order/{order.Id}", order);
 });
 
-///<summary> Метод для обновления книги </summary>
 app.MapPut("/order", async ([FromBody] Order order, IOrderRepository repository) =>
 {
     await repository.UpdateOrderAsync(order);
@@ -63,7 +59,6 @@ app.MapPut("/order", async ([FromBody] Order order, IOrderRepository repository)
     return Results.Created($"/order/{order.Id}", order);
 });
 
-///<summary> Метод для удаления книги </summary>
 app.MapDelete("/order/{id}", async (int id, IOrderRepository repository) =>
 {
     await repository.DeleteOrderAsync(id);
@@ -71,20 +66,15 @@ app.MapDelete("/order/{id}", async (int id, IOrderRepository repository) =>
     return Results.Ok();
 });
 
-#endregion
 
-#region Методы для работы с авторами
 
-///<summary> Метод для получения всех items </summary>
 app.MapGet("/item", async (IItemRepository repository) => Results.Ok(await repository.GetItemsAsync()));
 
-///<summary> Метод для получения автора по id </summary>
 app.MapGet("/item/{id}", async (int id, IItemRepository repository) =>
 await repository.GetItemAsync(id) is Item item
 ? Results.Ok(item)
 : Results.NotFound());
 
-///<summary> Метод для добавления item </summary>
 app.MapPost("/item", async ([FromBody] Item item, IItemRepository repository) =>
 {
 
@@ -95,7 +85,6 @@ app.MapPost("/item", async ([FromBody] Item item, IItemRepository repository) =>
 
 });
 
-///<summary> Метод для обновления item </summary>
 app.MapPut("/item", async ([FromBody] Item item, IItemRepository repository) =>
 {
     await repository.UpdateItemAsync(item);
@@ -106,7 +95,6 @@ app.MapPut("/item", async ([FromBody] Item item, IItemRepository repository) =>
 
 });
 
-///<summary> Метод для удаления item </summary>
 app.MapDelete("/item/{id}", async (int id, IItemRepository repository) =>
 {
     await repository.DeleteItemAsync(id);
