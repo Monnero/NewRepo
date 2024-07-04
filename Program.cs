@@ -2,15 +2,14 @@ using HotelWebApi.Data;
 using HotelWebApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<Db>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("Sqlite"));
 });
-builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
-builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,7 +22,7 @@ builder.Services.AddControllers()
 builder.Services.AddMvc();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Каталог книг", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Каталог", Version = "v1" });
 });
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
@@ -37,85 +36,78 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-#region Методы для работы с книгами
-///<summary> Метод для получения всех книг </summary>
-app.MapGet("/books", async (IBookRepository repository) => Results.Ok(await repository.GetBooksAsync()));
+#region Методы для работы с orders
+app.MapGet("/order", async (IOrderRepository repository) => Results.Ok(await repository.GetOrdersAsync()));
 
-///<summary> Метод для получения книги по id </summary>
-app.MapGet("/books/{id}", async (int id, IBookRepository repository) =>
-await repository.GetBookAsync(id) is Book book
-? Results.Ok(book)
+app.MapGet("/order/{id}", async (int id, IOrderRepository repository) =>
+await repository.GetOrderAsync(id) is Order order
+? Results.Ok(order)
 : Results.NotFound());
 
 
-///<summary> Метод для добавления книги </summary>
-app.MapPost("/books", async ([FromBody] Book book, IBookRepository repository) =>
+///<summary> Метод для добавления order </summary>
+app.MapPost("/order", async ([FromBody] Order order, IOrderRepository repository) =>
 {
-    await repository.InsertBookAsync(book);
+    await repository.InsertOrderAsync(order);
     await repository.SaveAsync();
-    return Results.Created($"/books/{book.Id}", book);
+    return Results.Created($"/order/{order.Id}", order);
 });
 
-///<summary> Метод для обновления книги </summary>
-app.MapPut("/books", async ([FromBody] Book book, IBookRepository repository) =>
+///<summary> Метод для обновления order </summary>
+app.MapPut("/order", async ([FromBody] Order order, IOrderRepository repository) =>
 {
-    await repository.UpdateBookAsync(book);
+    await repository.UpdateOrderAsync(order);
     await repository.SaveAsync();
-    return Results.Created($"/books/{book.Id}", book);
+    return Results.Created($"/order/{order.Id}", order);
 });
 
-///<summary> Метод для удаления книги </summary>
-app.MapDelete("/books/{id}", async (int id, IBookRepository repository) =>
+///<summary> Метод для удаления order </summary>
+app.MapDelete("/order/{id}", async (int id, IOrderRepository repository) =>
 {
-    await repository.DeleteBookAsync(id);
+    await repository.DeleteOrderAsync(id);
     await repository.SaveAsync();
     return Results.Ok();
 });
 
 #endregion
 
-#region Методы для работы с авторами
+#region Методы для работы с items
 
-///<summary> Метод для получения всех авторов</summary>
-app.MapGet("/authors", async (IAuthorRepository repository) => Results.Ok(await repository.GetAuthorsAsync()));
+///<summary> Метод для получения всех items </summary>
+app.MapGet("/item", async (IItemRepository repository) => Results.Ok(await repository.GetItemsAsync()));
 
 ///<summary> Метод для получения автора по id </summary>
-app.MapGet("/author/{id}", async (int id, IAuthorRepository repository) =>
-await repository.GetAuthorAsync(id) is Author author
-? Results.Ok(author)
+app.MapGet("/item/{id}", async (int id, IItemRepository repository) =>
+await repository.GetItemAsync(id) is Item item
+? Results.Ok(item)
 : Results.NotFound());
 
-///<summary> Метод для добавления автора </summary>
-app.MapPost("/author", async ([FromBody] Author author, IAuthorRepository repository) =>
+///<summary> Метод для добавления item </summary>
+app.MapPost("/item", async ([FromBody] Item item, IItemRepository repository) =>
 {
-    if (author.IsValidate())
-    {
-        await repository.InsertAuthorAsync(author);
-        await repository.SaveAsync();
-        return Results.Created($"/author/{author.Id}", author);
 
-    }
-    else return Results.Problem("author is not validate");
-});
+    await repository.InsertItemAsync(item);
+    await repository.SaveAsync();
+    return Results.Created($"/author/{item.Id}", item);
 
-///<summary> Метод для обновления автора </summary>
-app.MapPut("/author", async ([FromBody] Author author, IAuthorRepository repository) =>
-{
-    if (author.IsValidate())
-    {
-        await repository.UpdateAuthorAsync(author);
-        await repository.SaveAsync();
-        return Results.Created($"/author/{author.Id}", author);
-
-    }
-    else return Results.Problem("author is not validate");
 
 });
 
-///<summary> Метод для удаления автора </summary>
-app.MapDelete("/author/{id}", async (int id, IAuthorRepository repository) =>
+///<summary> Метод для обновления item </summary>
+app.MapPut("/item", async ([FromBody] Item item, IItemRepository repository) =>
 {
-    await repository.DeleteAuthorAsync(id);
+    await repository.UpdateItemAsync(item);
+    await repository.SaveAsync();
+    return Results.Created($"/item/{item.Id}", item);
+
+
+
+});
+
+///<summary> Метод для удаления item </summary>
+app.MapDelete("/item/{id}", async (int id, IItemRepository repository) =>
+{
+    await repository.DeleteItemAsync(id);
     await repository.SaveAsync();
     return Results.Ok();
 });

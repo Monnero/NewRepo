@@ -4,7 +4,7 @@ public class Db : DbContext
 {
     public Db(DbContextOptions<Db> options) : base(options) { }
 
-    public DbSet<Book> Books => Set<Book>();
-    public DbSet<Author> Authors => Set<Author>();
+    public DbSet<Order> Orders => Set<Order>();
+    public DbSet<Item> Items => Set<Item>();
    
 }
